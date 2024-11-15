@@ -1,0 +1,59 @@
+@import url('https://fonts.googleapis.com/css2?family=Rufina:wght@400;700&display=swap');
+
+hr {
+    display: block;
+    height: 1px;
+    border: 0;
+    border-top: 3.5px solid #ffffff;
+    margin: 1em 0;
+    padding: 0;
+}
+
+#slogan {
+    height: 400px;
+    width: 80%;
+    display: flex;
+    flex-direction: row;
+    justify-content: right;
+    font-size: 23px;
+    margin-top: 30px;
+	border: 1px, solid, #ffffff;
+    background-image: url("../../../public/assets/sloganback.jpg");
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: cover;
+    font-family: "Rufina", serif;
+    font-style: italic;
+    letter-spacing: 0.1rem;
+}
+
+#slogan h1{
+    margin-right: 15px;
+    margin-bottom: 15px;
+}
+
+#slogan h2{
+    margin-right: 15px;
+    margin-top: 8px;
+    font-size: 28px;
+    text-align: right;
+}
+
+.rollAgendar {
+    margin-top: 5px;
+    padding: 10px;
+    background-color: rgba(152, 155, 152, 0.6);
+    flex: 1;
+    color: #ffffff;
+    border-radius: 1.7px;
+    font-size: 25px;
+    letter-spacing: -1px;
+    font-weight: 600;
+    transition: all 0.5s ease-out;
+    padding: 15px 25px; 
+}
+
+.rollAgendar:hover {
+	background-color: rgba(152, 155, 152, 0.3);
+	color: #000000;
+}

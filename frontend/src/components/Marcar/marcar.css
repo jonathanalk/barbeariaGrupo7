@@ -1,0 +1,65 @@
+.agenda {
+    border: 2px solid #ffffff;
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: column;
+    margin-top: 10px;
+    padding: 1%;
+    
+}
+
+.agenda h2 {
+    font-size: 2rem;
+}
+
+.agenda input{
+    height: 23px;
+    margin-top: 5px;
+}
+
+.agenda select{
+    margin-top: 5px;
+}
+
+.agenda button {
+    margin: 0.4rem;
+}
+
+.agenda ul{
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+}
+
+#editar {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    height: 350px;
+    overflow-y: scroll;
+}
+
+#editar input {
+    width: 10rem;
+}
+
+#listacorte {
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    margin: 1rem;
+    width: 17%;
+}
+
+#novocorte {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 240px;
+}
+
+#filtros {
+    display: flex;
+    flex-direction: row;
+}
