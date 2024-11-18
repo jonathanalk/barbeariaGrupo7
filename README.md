@@ -57,7 +57,11 @@ barbearia/
 ├── docker-compose.yml
 └── Dockerfile
 
+5.Usuarios Padrão:
+Usuarios:                Senha:
+admin@example.com           admin
 
+cliente@example.com          cliente
 
 Endpoints da API
 /token/ (POST): Obtém um token de acesso JWT para autenticação.
@@ -82,8 +86,13 @@ Contribuições
 Contribuições são bem-vindas! Sinta-se à vontade para abrir issues e pull requests.
 
 Autor
-Seu Nome
-
+GRUPO 7
+    -Alex Sander Pereira da Silva Junior
+    -Francisco Gustavo de Jesus da Silva
+    -Jean Vieira Silva
+    -Jonathan Alves de Souza
+    -Lucas da Silva Sleman
+    -Yann Guimarães de Oliveira Araújo
 
 Licença
 MIT License

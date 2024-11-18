@@ -72,15 +72,6 @@ def main():
     print("hello")
     return jsonify({"message":"Hello World"})
 
-@app.route('/teste', methods=['POST'])
-def teste():
-    try:
-        data = request.get_json()
-        print(data)
-        return jsonify({'message': 'Dados recebidos com sucesso!', 'data': data}), 200
-    except Exception as e:
-        return jsonify({'message': 'Erro ao processar a requisição.', 'error': str(e)}), 500
-
 # Rota de login
 @app.route("/token/", methods=["POST"])
 def login_for_access_token():
@@ -231,7 +222,7 @@ def create_corte_route(current_user):
     try:
         data = request.get_json()
         # Validação com Marshmallow ou Pydantic (dependendo da sua escolha)
-        corte = CorteSchema(**data)  # ou CorteSchema(**data) 
+        corte = CorteSchema(**data) 
         corte_id = create_corte(corte)
         return jsonify({"_id": str(corte_id), **corte.model_dump()}), 201
 
