@@ -57,6 +57,7 @@ function App() {
 
   const handleLogout = () => {
     localStorage.removeItem('token');
+    setmostrarJanelaAgendar(false);
     setIsLoginIn(false);
     setUserData(null); // Limpa os dados do usuário ao deslogar
     console.log('Logout efetuado!');
