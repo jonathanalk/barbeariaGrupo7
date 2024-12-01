@@ -1,188 +1,88 @@
-import React from "react";
-import { useState, useEffect, useContext } from "react";
+import React from "react"
+import axios from 'axios';
+import { useState, useEffect, useContext} from 'react';
 import UserContext from "../AuthContext/usercontext";
-import "./marcar.css";
-import { v4 as uuidv4 } from 'uuid'; // Importe a função uuidv4
+import './marcar.css';
 
 
+    
 const Marcar = () => {
-    const [cortes, setCortes] = useState([]);
-    const [newCorte, setNewCorte] = useState({
-        nome: "",
-        dia: "",
-        hora: "",
-        servico: "",
-        descricao: "",
-    });
-    const [editingCorte, setEditingCorte] = useState(null);
+
+    const [cortes, setcortes] = useState([]);
+    const [newcorte, setNewcorte] = useState({ nome: '', dia: '', hora: '', servico:'', descricao: ''});
+    const [editingcorte, setEditingcorte] = useState(null);
     const [filter, setFilter] = useState(null);
-    const [mostrarJanelaEditar, setMostrarJanelaEditar] = useState(false);
-    const [userData] = useContext(UserContext);
-
-
-    let isBarbeiro = userData.role === "barbeiro";
+    const [mostrarJanelaEditar, setmostrarJanelaEditar] = useState(false);
+    const [userData] = useContext(UserContext)
+    
+    let isBarbeiro = false;
+    
+    if (userData.role === "barbeiro") {
+      isBarbeiro = true;
+    }
 
     const handleFilterChange = (name) => {
         setFilter(name);
     };
 
     const cortesFiltrados = filter
-    ? cortes.filter((corte) => corte.dia === filter)
+    ? cortes.filter(corte => corte.dia === filter)
     : cortes;
 
-  // Função para buscar os cortes do backend
-    const fetchCortes = async () => {
-        const token = localStorage.getItem('token');
-        if (token) {
-            try {
-                const response = await fetch('http://localhost:5000/cortes/', {
-                    method: 'GET',
-                    headers: {
-                        'Authorization': `Bearer ${token}`, // Inclui o token no header
-                        'Content-Type': 'application/json', // Se estiver enviando dados JSON
-                    },
-                });
-                if (!response.ok){
-                    throw new Error('Erro ao buscar cortes');
-                }    
-
-                const data = await response.json();
-                setCortes(data);
-            } catch (error) {
-                console.error('Erro ao buscar cortes', error);
-                
-            }    
-        } else {
-            console.error('Token não encontrado');
-        }
-        
-        
-        
-    };
-    
+    // Função para buscar os cortes do backend
     useEffect(() => {
-        fetchCortes();
-      }, [newCorte]);
-    
-      // Função para lidar com mudanças nos campos de Input
+        axios.get('http://localhost:5000/cortes/')
+        .then(response => setcortes(response.data))
+        .catch(error => console.error('Erro ao buscar cortes:',
+       error));
+        }, [newcorte]);
+       
+
+    // Função para lidar com mudanças nos campos de Input
     const handleInputChange = (e) => {
         const { name, value } = e.target;
-        setNewCorte((prevState) => ({ ...prevState, [name]: value }));
+        setNewcorte(prevState => ({ ...prevState, [name]: value }));
     };
 
     const handleSelectChange = (e) => {
         const { name, value } = e.target;
-        setNewCorte((prevState) => ({ ...prevState, [name]: value }));
-    };
+        setNewcorte(prevState => ({ ...prevState, [name]: value }));
+    }
 
     // Função para adicionar um novo corte
-    const handleAddCorte = async () => {
-        const token = localStorage.getItem('token'); // Obtém o token
-      
-        const idUnico = uuidv4(); 
-        try {
-          const response = await fetch("http://localhost:5000/cortes/", {
-            method: "POST",
-            headers: {
-              'Authorization': `Bearer ${token}`, // Inclui o token no header
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({ ...newCorte, id_unico: idUnico}),
-          });
-      
-          if (!response.ok) {
-            const errorData = await response.json(); // Tenta obter a mensagem de erro do servidor
-            throw new Error(errorData.message || 'Erro ao adicionar corte');
-          }
-      
-          const data = await response.json();
-          setCortes([...cortes, data]);
-          setNewCorte({ 
-            nome: "", 
-            dia: "", 
-            hora: "", 
-            servico: "", 
-            descricao: "" 
-          });
-        } catch (error) {
-          console.error("Erro ao agendar:", error);
-          // ... lidar com o erro (ex: exibir mensagem de erro)
-        }
+    const handleAddcorte = () => {
+        axios.post('http://localhost:5000/cortes/', newcorte)
+        .then(response => {
+        setcortes([...cortes, { ...newcorte, _id: response.data }]);
+        setNewcorte({ nome: '', dia: '', hora: '', servico:'', descricao: '' });
+        }).catch(error => console.error('Erro ao agendar:', error));
     };
-
-    const handleDeleteCorte = async (corte) => { // Recebe o objeto corte completo
-        const token = localStorage.getItem('token');
-      
-        try {
-          const response = await fetch(`http://localhost:5000/cortes/`, { // Rota sem ID
-            method: "DELETE",
-            headers: {
-              'Authorization': `Bearer ${token}`,
-              'Content-Type': 'application/json' // Adicione o Content-Type para enviar JSON
-            },
-            body: JSON.stringify(corte) // Envia o objeto corte no corpo da requisição
-          });
-      
-          if (!response.ok) {
-            const errorData = await response.json();
-            throw new Error(errorData.message || 'Erro ao deletar corte');
-          }
-      
-          // Remove o corte da lista com base nos campos do corte
-          setCortes(cortes.filter((c) => 
-            c.nome !== corte.nome || 
-            c.dia !== corte.dia || 
-            c.hora !== corte.hora || 
-            c.servico !== corte.servico || 
-            c.descricao !== corte.descricao 
-          ));
-        } catch (error) {
-          console.error("Erro ao deletar corte:", error);
-          // ... lidar com o erro (ex: exibir mensagem de erro)
-        }
+  
+    // Função para deletar um corte
+    const handleDeletecorte = (corteId) => {
+        axios.delete(`http://localhost:5000/cortes/${corteId}`)
+        .then(response => {setcortes(cortes.filter(corte => corte._id !== corteId))})
+        .catch(error => console.error('Erro ao deletar corte:', error));
     };
-
+  
     // Função para iniciar a edição de um corte
-    const handleEditCorte = (corte) => {
-        setMostrarJanelaEditar(!mostrarJanelaEditar);
-        setEditingCorte(corte.id_unico); // Armazena o objeto corte completo
-        console.log(corte.id_unico);
-        
-        setNewCorte({
-            id_unico: corte.id_unico,
-            nome: corte.nome,
-            dia: corte.dia,
-            hora: corte.hora,
-            servico: corte.servico,
-            descricao: corte.descricao,
-        });
-      };
-      
-
-      
-    // Função para atualizar um corte existente
-    const handleUpdateCorte = async (corte) => {
-        const token = localStorage.getItem('token');
-
-        console.log(newCorte.id_unico);
-        
-    
-        try {
-            await fetch(`http://localhost:5000/cortes/${newCorte.id_unico}`, {  // Inclui o id_unico na URL
-              method: "PUT",
-              headers: {
-                'Authorization': `Bearer ${token}`,
-                'Content-Type': 'application/json'
-              },
-              body: JSON.stringify({...newCorte, id_unico: newCorte.id_unico})  // Envia apenas os novos dados
-            });
-
-            setEditingCorte(null)
-        } catch (error) {
-        console.error("Erro ao atualizar corte:", error);
-        }
-        window.location.reload();
+    const handleEditcorte = (corte) => {
+        setmostrarJanelaEditar(!mostrarJanelaEditar);
+        setEditingcorte(corte._id);
+        setNewcorte({ nome: corte.nome, dia: corte.dia, hora: corte.hora, servico: corte.servico, descricao: corte.descricao });
     };
+  
+    // Função para atualizar um corte existente
+    const handleUpdatecorte = () => {
+        axios.put(`http://localhost:5000/cortes/${editingcorte}`, newcorte)
+        .then(response => {
+        setcortes(cortes.map(corte => (
+        corte._id === editingcorte ? { ...corte, ...newcorte } : corte )));
+        setEditingcorte(null);
+        setNewcorte({ nome: '', dia: '', hora: '', servico:'', descricao: '' }); 
+        }).catch(error => console.error('Erro ao atualizar corte:', error));
+    };
+
     
     return(
         <>
@@ -208,21 +108,18 @@ const Marcar = () => {
                                 <p><strong>Serviço: </strong>{corte.servico}</p> 
                                 <strong>Descrição</strong> {corte.descricao}
                                 {isBarbeiro ? (<div>
-                                <button onClick={() => handleDeleteCorte(corte)}>Deletar</button>
-                                <button onClick={() => handleEditCorte(corte)}>Editar</button>
-                                {editingCorte === corte.id_unico && mostrarJanelaEditar &&(
-                                <section id={`updatecorte_${corte}`} style={{ marginTop: '20px', display: "flex", flexDirection:"column" }}>
+                                <button onClick={() => handleDeletecorte(corte._id)}>Deletar</button>
+                                <button onClick={() => handleEditcorte(corte)}>Editar</button>
+                                {editingcorte === corte._id && mostrarJanelaEditar &&(
+                                <section id={`updatecorte_${corte._id}`} style={{ marginTop: '20px', display: "flex", flexDirection:"column" }}>
                                     <h3>Atualizar corte</h3>
                                     <label htmlFor="atualizarnome">Nome: </label>
-                                        <input 
-                                        type="text" 
-                                        name="nome"
-                                        value={newCorte.nome}
+                                        <input type="text" name="nome"
                                         onChange={handleInputChange}
                                         placeholder="Nome do Cliente"
                                         />
                                     <label htmlFor="dias">Dia: </label>
-                                        <select id="dias" name="dia" value={newCorte.dia} onChange={handleSelectChange}>
+                                        <select id="dias" name="diaat" onChange={handleSelectChange}>
                                             <option>Escolha o dia</option>
                                             <option value="Segunda">Segunda</option>
                                             <option value="Terça">Terça</option>
@@ -231,7 +128,7 @@ const Marcar = () => {
                                             <option value="Sexta">Sexta</option>
                                         </select>
                                     <label htmlFor="agendarhoras">Hora: </label>
-                                        <select id="agendarhoras" name="hora"value={newCorte.hora} onChange={handleSelectChange}>
+                                        <select id="agendarhoras" name="horaat" onChange={handleSelectChange}>
                                             <optgroup label="Manhã">
                                                 <option>Escolha o horário</option>
                                                 <option value="08:30">08:30</option>
@@ -255,7 +152,7 @@ const Marcar = () => {
                                             </optgroup>
                                         </select>
                                     <label htmlFor="atualizarservico">Serviço: </label>
-                                        <select id="atualizarservico" name="servico" value={newCorte.servico} onChange={handleSelectChange}>
+                                        <select id="atualizarservico" name="servicoat" onChange={handleSelectChange}>
                                             <option>Escolha o serviço</option>
                                             <option value="Máquina">Máquina</option>
                                             <option value="Tesoura">Tesoura</option>
@@ -268,11 +165,10 @@ const Marcar = () => {
                                     <label htmlFor="atualizardescricao" style={{marginBottom:"0.2rem"}}>Descrição do corte: </label>
                                         <input id="atualizardescricao"
                                             type="text" name="descricao"
-                                            value={newCorte.descricao}
                                             onChange={handleInputChange}
                                             placeholder="Tem alguma preferência para o corte?"
                                         />
-                                    <button onClick={handleUpdateCorte}>Salvar Alterações</button>
+                                    <button onClick={handleUpdatecorte}>Salvar Alterações</button>
                                 </section>
                                 )}
                                 </div>) : (
@@ -289,6 +185,7 @@ const Marcar = () => {
                 <label htmlFor="agendarnome">Nome: </label>
                     <input id="agendarnome"
                     type="text" name="nome"
+                    value={newcorte.nome}
                     onChange={handleInputChange}
                     placeholder="Nome do Cliente"
                     required
@@ -340,10 +237,11 @@ const Marcar = () => {
                 <label htmlFor="agendardescricao" style={{marginBottom:"0.2rem"}}>Descrição do corte: </label>
                     <input id="agendardescricao" 
                         type="text" name="descricao"
+                        value={newcorte.descricao}
                         onChange={handleInputChange}
                         placeholder="Tem alguma preferência para o corte?"
                     />
-                <button onClick={handleAddCorte}>Adicionar corte</button>
+                <button onClick={handleAddcorte}>Adicionar corte</button>
             </section>
         </>
     )
