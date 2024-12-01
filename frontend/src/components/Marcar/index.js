@@ -289,7 +289,6 @@ const Marcar = () => {
                 <label htmlFor="agendarnome">Nome: </label>
                     <input id="agendarnome"
                     type="text" name="nome"
-                    value={newCorte.nome}
                     onChange={handleInputChange}
                     placeholder="Nome do Cliente"
                     required
@@ -341,7 +340,6 @@ const Marcar = () => {
                 <label htmlFor="agendardescricao" style={{marginBottom:"0.2rem"}}>Descrição do corte: </label>
                     <input id="agendardescricao" 
                         type="text" name="descricao"
-                        value={newCorte.descricao}
                         onChange={handleInputChange}
                         placeholder="Tem alguma preferência para o corte?"
                     />

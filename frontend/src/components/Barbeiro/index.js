@@ -243,7 +243,6 @@ const Barbeiro = () => {
             id="cadastrarnome"
             type="text"
             name="nome"
-            value={newUsuario.nome}
             onChange={handleInputChange}
             placeholder="Nome do Cliente"
             required
@@ -255,7 +254,6 @@ const Barbeiro = () => {
             id="cadastraremail"
             type="text"
             name="email"
-            value={newUsuario.email}
             onChange={handleInputChange}
             placeholder="example@example.com"
             required
@@ -267,7 +265,6 @@ const Barbeiro = () => {
             id="cadastrarsenha"
             type="password"
             name="senha"
-            value={newUsuario.senha}
             onChange={handleInputChange}
             placeholder="senha"
             required
