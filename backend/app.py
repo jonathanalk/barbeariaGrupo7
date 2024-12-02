@@ -139,6 +139,8 @@ def create_usuario_route(current_user):
         existing_user = get_email(usuario['email'])
         if existing_user:
             return jsonify({"message": "Email já cadastrado"}), 400
+        if existing_user == "":
+            return jsonify({"message": "Campo de Email Vazio"}), 400
 
         hashed_password = get_password_hash(usuario['senha'])
         new_user = Usuario(
@@ -222,7 +224,7 @@ def create_corte_route(current_user):
     try:
         data = request.get_json()
         # Validação com Marshmallow ou Pydantic (dependendo da sua escolha)
-        corte = CorteSchema(**data) 
+        corte = CorteSchema(**data)
         corte_id = create_corte(corte)
         return jsonify({"_id": str(corte_id), **corte.model_dump()}), 201
 
@@ -270,7 +272,7 @@ def update_corte_route(current_user, id_unico: str):
     except Exception as e:
         print(f"Erro ao atualizar corte: {e}")
         return jsonify({"message": "Erro ao processar a requisição"}), 500
-  
+
 @app.route("/cortes/", methods=["DELETE"])
 @token_required
 def delete_corte_route(current_user):

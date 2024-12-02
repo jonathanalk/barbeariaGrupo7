@@ -52,11 +52,9 @@
     width: 17%;
 }
 
-#novocorte {
+#formcorte{
     display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 240px;
+    flex-direction: column;
 }
 
 #filtros {
